@@ -137,7 +137,7 @@
                              :value))
    (make-re-submatch/posix (proc (:value :exact-integer :exact-integer :string :vector) :value))))
 
-(define re-match-internals-interface
+(define-interface re-match-internals-interface
   (export (regexp-match:string (proc (:value) :string))
           (regexp-match:submatches  (proc (:value) :vector))))
 
@@ -194,6 +194,13 @@
 		      re-internals-interface))
 
 (define-interface rx-syntax-interface (export (rx :syntax)))
+
+(define-interface sre-syntax-tools-interface
+  (export (if-sre-form :syntax)
+          sre-form?
+          parse-sre parse-sres
+          regexp->scheme
+          static-regexp?))
 
 (define-interface re-match-syntax-interface
   (export (let-match  :syntax)

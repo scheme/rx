@@ -24,11 +24,7 @@
 (define-structures ((re-level-0 re-level-0-interface)
                     (re-match-internals re-match-internals-interface)
                     (re-internals re-internals-interface)
-                    (sre-syntax-tools (export (if-sre-form :syntax)
-                                              sre-form?
-                                              parse-sre parse-sres
-                                              regexp->scheme
-                                              static-regexp?))
+                    (sre-syntax-tools sre-syntax-tools-interface)
                     (standard-char-sets (export nonl-chars word-chars))
                     (sre-internal-syntax-tools (export expand-rx)))
   (open defrec-package
