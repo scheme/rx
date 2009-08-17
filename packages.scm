@@ -12,7 +12,7 @@
   (files let-opt-expanders))
 
 (define-structure let-opt let-opt/interface
-  (open scheme signals)
+  (open scheme signals receiving)
   (for-syntax (open scheme let-opt-expanders))
   (files let-opt))
 

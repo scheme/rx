@@ -9,3 +9,4 @@
       "packages.scm")
 
 (user)
+(open 'rx-syntax 're-level-0 'sre-syntax-tools)

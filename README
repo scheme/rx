@@ -1,0 +1,12 @@
+-*- outline -*-
+
+* Dependencies
+This code depends on the latest revision of scheme48 here
+<http://s48.org/cgi-bin/hgwebdir.cgi/s48>.
+
+* To get started
+
+In the user package (the default for scheme48) run the command:
+,exec ,load load.scm
+This will bring the rx syntax, regular expression related functions,
+and sre hacking tools into the environment.
