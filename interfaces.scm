@@ -20,13 +20,13 @@
 
 (define-interface basic-re-interface
   (export (re-dsm? (proc (:value) :boolean))
-          (make-re-dsm (proc (:value :exact-integer :exact-integer) :value))
+          ((re-dsm make-re-dsm) (proc (:value :exact-integer :exact-integer) :value))
           (re-dsm:body (proc (:value) :value))
           (re-dsm:pre-dsm (proc (:value) :exact-integer))
           (re-dsm:tsm (proc (:value) :exact-integer))
           (re-dsm:posix (proc (:value) :value))
           (set-re-dsm:posix (proc (:value :value) :unspecific))
-          ((re-dsm:post-dsm re-dsm) (proc (:value) :exact-integer))
+          (re-dsm:post-dsm (proc (:value) :exact-integer))
           open-dsm
 
           (re-seq? (proc (:value) :boolean))
