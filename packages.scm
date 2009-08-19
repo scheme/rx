@@ -24,9 +24,11 @@
 (define-structures ((re-level-0 re-level-0-interface)
                     (re-match-internals re-match-internals-interface)
                     (re-internals re-internals-interface)
-                    (sre-syntax-tools sre-syntax-tools-interface)
                     (standard-char-sets (export nonl-chars word-chars))
-                    (sre-internal-syntax-tools (export expand-rx)))
+                    (sre-internal-syntax-tools (export sre-form?
+                                                       parse-sre parse-sres
+                                                       regexp->scheme
+                                                       static-regexp? expand-rx)))
   (open defrec-package
         weak
         ;; re-posix-parsers     ; regexp->posix-string
@@ -47,8 +49,11 @@
         scheme)
 
   (files re-low re simp re-high
-         parse posixstr spencer re-syntax)
+         parse posixstr spencer re-syntax))
 
+(define-structure sre-syntax-tools sre-syntax-tools-interface
+  (open scheme sre-internal-syntax-tools)
+  (for-syntax (open scheme sre-internal-syntax-tools))
   (begin (define-syntax if-sre-form
            (lambda (exp r c)
              (if (sre-form? (cadr exp) r c)
