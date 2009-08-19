@@ -42,7 +42,6 @@
         ascii
         primitives                      ; JMG add-finalizer!
         define-record-types             ; JMG debugging
-        external-calls
         srfi-13                         ; string-fold
         posix-regexps
         scheme)
