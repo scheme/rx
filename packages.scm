@@ -117,6 +117,28 @@
         re-match-syntax
         re-folders))
 
+(define-structure re-procs-tests (export test-re-procs)
+  (open scheme srfi-78 srfi-6 receiving
+        re-exports)
+  (files (tests re-procs-tests)))
+
+(define-structure re-adt-tests (export test-re-adt)
+  (open scheme srfi-78 re-exports)
+  (files (tests re-adt-tests)))
+
+(define-structure sre-tools-tests (export test-sre-tools)
+  (open scheme srfi-78 re-exports sre-syntax-tools)
+  (files (tests sre-tools-tests)))
+
+(define-structure rx-tests (export test-rx)
+  (open scheme srfi-78 re-procs-tests
+        re-adt-tests sre-tools-tests)
+  (begin (define (test-rx)
+           (test-re-procs)
+           (test-re-adt)
+           (test-sre-tools)
+           (check-report)
+           (check-reset!))))
 
 ;;; File        Exports
 ;;; ----        -------
