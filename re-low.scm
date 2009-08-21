@@ -9,21 +9,25 @@
   submatches)
 
 (define (match:start match . maybe-index)
-  (match-start
-   (vector-ref (regexp-match:submatches match)
-	       (:optional maybe-index 0))))
+  (let ((index (:optional maybe-index 0))
+        (submatches (regexp-match:submatches match)))
+    (and (<= 0 index (- (vector-length submatches) 1))
+         (match-start (vector-ref submatches index)))))
 
 (define (match:end match . maybe-index)
-  (match-end
-   (vector-ref (regexp-match:submatches match)
-	       (:optional maybe-index 0))))
+  (let ((index (:optional maybe-index 0))
+        (submatches (regexp-match:submatches match)))
+    (and (<= 0 index (- (vector-length submatches) 1))
+         (match-end (vector-ref submatches index)))))
 
 (define (match:substring match . maybe-index)
-  (let* ((i (:optional maybe-index 0))
-	 (submatch (vector-ref (regexp-match:submatches match) i)))
-    (and submatch (substring (regexp-match:string match)
-			     (match-start submatch)
-			     (match-end submatch)))))
+  (let ((index (:optional maybe-index 0))
+        (submatches (regexp-match:submatches match)))
+    (and (<= 0 index (- (vector-length submatches) 1))
+         (let ((submatch (vector-ref submatches index)))
+           (substring (regexp-match:string match)
+                      (match-start submatch)
+                      (match-end submatch))))))
 
 ;;; Compiling regexps
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
