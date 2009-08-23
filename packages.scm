@@ -87,10 +87,6 @@
   (access signals) ; for ERROR
   (files re-match-syntax))
 
-(define-structure re-old-funs re-old-funs-interface
-  (open re-level-0 (subset signals (error warn)) receiving scheme)
-  (files oldfuns))
-
 (define-structure re-subst re-subst-interface
   (open re-level-0
         re-match-internals

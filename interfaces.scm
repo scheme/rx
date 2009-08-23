@@ -113,17 +113,6 @@
           (uncase-char-set (proc (:value) :value))
           (uncase-string (proc (:string) :value))))
 
-;;; These guys were made obsolete by the new SRE package and exist for
-;;; backwards compatibility only.
-(define-interface re-old-funs-interface
-  (export
-   (string-match (proc (:value :string &opt :exact-integer) :value))
-   (make-regexp  (proc (:string) :value))
-   (regexp-exec  (proc (:value :string &opt :exact-integer) :value))
-   (->regexp     (proc (:value) :value))
-   (regexp-quote (proc (:string) :value))))
-
-
 (define-interface re-internals-interface
   ;; These are constructors for the Scheme unparser
   (export
