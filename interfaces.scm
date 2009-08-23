@@ -9,11 +9,11 @@
           run-as-long-as
           obtain-all-or-none))
 
-(define-interface let-opt-expanders/interface
+(define-interface let-opt-expanders-interface
   (export expand-let-optionals
           expand-let-optionals*))
 
-(define-interface let-opt/interface
+(define-interface let-opt-interface
   (export (let-optionals  :syntax)
           (let-optionals* :syntax)
           (:optional      :syntax)))

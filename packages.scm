@@ -5,13 +5,13 @@
         threads threads-internal placeholders locks srfi-1)
   (files utilities))
 
-(define-structure let-opt-expanders let-opt-expanders/interface
+(define-structure let-opt-expanders let-opt-expanders-interface
   (open scheme
         signals
         srfi-8)
   (files let-opt-expanders))
 
-(define-structure let-opt let-opt/interface
+(define-structure let-opt let-opt-interface
   (open scheme signals receiving)
   (for-syntax (open scheme let-opt-expanders))
   (files let-opt))
