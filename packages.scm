@@ -1,24 +1,25 @@
+(define-structure error-package (export warn error)
+  (open (subset signals (error warn))))
+
 (define-structure utilities utilities-interface
-  (open bitwise (subset signals (error warn))
+  (open bitwise error-package
         loopholes let-opt scheme define-record-types
         records record-types
         threads threads-internal placeholders locks srfi-1)
   (files utilities))
 
 (define-structure let-opt-expanders let-opt-expanders-interface
-  (open scheme
-        signals
-        srfi-8)
+  (open scheme error-package srfi-8)
   (files let-opt-expanders))
 
 (define-structure let-opt let-opt-interface
-  (open scheme signals receiving)
+  (open scheme error-package receiving)
   (for-syntax (open scheme let-opt-expanders))
   (files let-opt))
 
 (define-structure defrec-package (export (define-record :syntax))
   (open records record-types scheme)
-  (for-syntax (open scheme (subset signals (error warn)) receiving))
+  (for-syntax (open scheme error-package receiving))
   (files defrec))
 
 (define-structures ((re-level-0 re-level-0-interface)
@@ -31,7 +32,6 @@
                                                        static-regexp? expand-rx)))
   (open defrec-package
         weak
-        ;; re-posix-parsers     ; regexp->posix-string
         let-opt
         sort                            ; Posix renderer
         define-record-types
@@ -40,7 +40,7 @@
         utilities
         (subset srfi-1 (fold every fold-right))
         srfi-14
-        (subset signals (error warn))
+        error-package
         ascii
         primitives                      ; JMG add-finalizer!
         define-record-types             ; JMG debugging
@@ -66,7 +66,7 @@
         re-level-0
         (subset srfi-1 (fold))
         srfi-14
-        (subset signals (error warn))
+        error-package
         ascii
         scheme)
   (files rx-lib))
@@ -81,10 +81,8 @@
   (begin (define-syntax rx expand-rx)))
 
 (define-structure re-match-syntax re-match-syntax-interface
-  (for-syntax (open scheme
-                    signals))   ; For ERROR
+  (for-syntax (open scheme error-package))
   (open re-level-0 scheme)
-  (access signals) ; for ERROR
   (files re-match-syntax))
 
 (define-structure re-subst re-subst-interface
@@ -92,18 +90,17 @@
         re-match-internals
         posix-regexps
         (subset srfi-1 (fold))
-        ;;scsh-level-0    ; write-string
         os-strings
         i/o
         let-opt
         receiving
-        (subset signals (error warn))
+        error-package
         srfi-13         ; string-copy!
         scheme)
   (files re-subst))
 
 (define-structure re-folders re-folders-interface
-  (open re-level-0 let-opt (subset signals (error warn)) scheme)
+  (open re-level-0 let-opt error-package scheme)
   (files re-fold))
 
 (define-structure re-exports re-exports-interface
