@@ -4,9 +4,11 @@
 ;;; Match data for regexp matches.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define-record regexp-match
-  string
-  submatches)
+(define-record-type :regexp-match
+  (make-regexp-match string submatches)
+  regexp-match?
+  (string regexp-match:string)
+  (submatches regexp-match:submatches))
 
 (define (match:start match . maybe-index)
   (let ((index (:optional maybe-index 0))
@@ -47,7 +49,7 @@
 ;  tvec			; Translation vector for the submatches
 ;  ((disclose self) (list "cre" (cre:string self))))
 
-(define-record-type cre :cre
+(define-record-type :cre
   (really-make-cre string max-paren regexp regexp/nm tvec debug)
   cre?
   (string cre:string set-cre:string)

@@ -5,16 +5,16 @@
 ;;;         But this prevents it from being moved out into a containing
 ;;;         choice or seq elt, or outer DSM. Fix.
 
-;;; A regexp is a: dsm, submatch, seq, choice, repeat, 
+;;; A regexp is a: dsm, submatch, seq, choice, repeat,
 ;;;                char-set, string, bos, eos
 
 ;;; Deleted sub-match regexp
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; This stands for a regexp containing TSM submatches, of which
-;;; PRE-DSM come first as dead submatches, then the regexp BODY with its 
+;;; PRE-DSM come first as dead submatches, then the regexp BODY with its
 ;;; submatches, then POST-DSM as dead submatches.
 
-(define-record-type re-dsm :re-dsm
+(define-record-type :re-dsm
   (really-make-re-dsm body pre-dsm tsm posix)
   re-dsm?
   (body     re-dsm:body)		; A Regexp
@@ -24,7 +24,7 @@
 
 (define (make-re-dsm/tsm body pre-dsm tsm) (really-make-re-dsm body pre-dsm tsm #f))
 
-;;; This is only used in code that the (RX ...) macro produces 
+;;; This is only used in code that the (RX ...) macro produces
 ;;; for static regexps.
 (define (make-re-dsm/posix body pre-dsm tsm posix-str tvec)
   (really-make-re-dsm body pre-dsm tsm (new-cre posix-str tvec)))
@@ -32,7 +32,7 @@
 (define (make-re-dsm body pre-dsm post-dsm)
   (make-re-dsm/tsm body pre-dsm (+ post-dsm pre-dsm (re-tsm body))))
 
-;;; "Virtual field" for the RE-DSM record -- how many dead submatches 
+;;; "Virtual field" for the RE-DSM record -- how many dead submatches
 ;;; come after the body:
 
 (define (re-dsm:post-dsm re)		; Number of post-body DSM's =
@@ -53,7 +53,7 @@
 	    (make-re-dsm/tsm body1 pre-dsm tsm))))))	; Non-trivial DSM
 
 ;;; Take a regexp RE and return an equivalent (re', pre-dsm) pair of values.
-;;; Recurses into DSM records. It is the case that 
+;;; Recurses into DSM records. It is the case that
 ;;;   (<= (+ pre-dsm (re-tsm re')) (re-tsm re))
 ;;; The post-dsm value is (- (re-tsm re) (re-tsm re') pre-dsm).
 
@@ -68,10 +68,10 @@
 ;;; Sequence: (: re ...)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define-record-type re-seq :re-seq
+(define-record-type :re-seq
   (really-make-re-seq elts tsm posix)
   re-seq?
-  (elts   re-seq:elts)				; Regexp list 
+  (elts   re-seq:elts)				; Regexp list
   (tsm    re-seq:tsm)				; Total submatch count
   (posix  re-seq:posix set-re-seq:posix))	; Posix record
 
@@ -119,7 +119,7 @@
 ;;; Choice: (| re ...)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define-record-type re-choice :re-choice
+(define-record-type :re-choice
   (really-make-re-choice elts tsm posix)
   re-choice?
   (elts re-choice:elts)				; List of rel-items
@@ -192,7 +192,7 @@
 ;;; DSM. Hence
 ;;;     (= (re-repeat:tsm re) (re-tsm (re-repeat:body re)))
 
-(define-record-type re-repeat :re-repeat
+(define-record-type :re-repeat
   (really-make-re-repeat from to body tsm posix)
   re-repeat?
   (from  re-repeat:from)	; Integer    (Macro expander abuses.)
@@ -293,7 +293,7 @@
 ;;; BODY, then perhaps more dead submatches, all for a total of TSM
 ;;; submatches.
 
-(define-record-type re-submatch :re-submatch
+(define-record-type :re-submatch
   (really-make-re-submatch body pre-dsm tsm posix)
   re-submatch?
   (body re-submatch:body)	; Regexp
@@ -309,7 +309,7 @@
   (really-make-re-submatch body pre-dsm tsm (new-cre posix-str tvec)))
 
 
-;;; "Virtual field" for the RE-SUBMATCH record -- how many dead submatches 
+;;; "Virtual field" for the RE-SUBMATCH record -- how many dead submatches
 ;;; come after the body:
 
 (define (re-submatch:post-dsm re)	 ; Number of post-body DSM's =
@@ -340,7 +340,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Also, re-empty and re-trivial.
 
-(define-record-type re-string :re-string
+(define-record-type :re-string
   (really-make-re-string chars posix)
   re-string?
   (chars re-string:chars set-re-string:chars)
@@ -375,9 +375,14 @@
 (define (re-trivial? re)
   (eq? re re-trivial))
 
-(define-record re-char-set
-  cset			; A character set	(Macro expander abuses.)
-  (posix    #f))	; Posix record
+(define-record-type :re-char-set
+  (really-make-re-char-set cset posix)
+  re-char-set?
+  (cset re-char-set:cset set-re-char-set:cset) ; A character set
+  (posix re-char-set:posix set-re-char-set:posix))	; Posix record
+
+(define (make-re-char-set cset)
+  (really-make-re-char-set cset #f))
 
 (define re-char-set make-re-char-set)	; For consistency w/other re makers.
 
@@ -397,11 +402,25 @@
 	 (and (char-set? cs) ; Might be code...
 	      (char-set-empty? cs)))))
 
-(define-record re-bos)	(define re-bos (make-re-bos))
-(define-record re-eos)  (define re-eos (make-re-eos))
+(define-record-type :re-bos
+  (make-re-bos) re-bos?)
 
-(define-record re-bol)  (define re-bol (make-re-bol))
-(define-record re-eol)  (define re-eol (make-re-eol))
+(define re-bos (make-re-bos))
+
+(define-record-type :re-eos
+  (make-re-eos) re-eos?)
+
+(define re-eos (make-re-eos))
+
+(define-record-type :re-bol
+  (make-re-bol) re-bol?)
+
+(define re-bol (make-re-bol))
+
+(define-record-type :re-eol
+  (make-re-eol) re-eol?)
+
+(define re-eol (make-re-eol))
 
 (define re-any (make-re-char-set/posix char-set:full "." '#()))
 
@@ -455,7 +474,7 @@
    ((re-repeat? re) (re-repeat (re-repeat:from re)
 			       (re-repeat:to re)
 			       (flush-submatches (re-repeat:body re))))
-		  
+
    ((re-submatch? re) (flush-submatches (re-submatch:body re)))
    ((re-dsm? re)      (flush-submatches (re-dsm:body      re)))
 
@@ -467,7 +486,7 @@
 ;;; should be identical to the original argument X. MAP/CHANGED constructs
 ;;; the mapped list sharing as long an unchanged tail as possible with the
 ;;; list ELTS; if F changes no argument, MAP/CHANGED returns exactly the list
-;;; ELTS. MAP/CHANGED returns two values: the mapped list, and a changed? 
+;;; ELTS. MAP/CHANGED returns two values: the mapped list, and a changed?
 ;;; flag for the entire list.
 
 (define (map/changed f elts)
@@ -526,7 +545,7 @@
 					      (re-submatch:tsm     re))
 			#t)
 		(values re #f))))
-		  
+
 	 ((re-string? re)
 	  (let ((cf-re (uncase-string (re-string:chars re))))
 	    (if (re-string? cf-re)
@@ -535,8 +554,8 @@
 
 	 (else (values re #f))))
     new-re))
-		  
-     
+
+
 ;;; (uncase-char-set cs)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Return a regexp for char-set cs' such that cs' contains every char
@@ -590,7 +609,7 @@
 	(make-re-seq new-seq))))
 
 
-		     
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define char-set-full?
   (let ((allchars-nchars (char-set-size char-set:full)))
