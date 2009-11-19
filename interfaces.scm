@@ -4,10 +4,7 @@
           vfold vfold-right
           check-arg
           deprecated-proc
-          real->exact-integer
-          make-reinitializer
-          run-as-long-as
-          obtain-all-or-none))
+          real->exact-integer))
 
 (define-interface let-opt-expanders-interface
   (export expand-let-optionals
