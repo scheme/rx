@@ -3,9 +3,10 @@
 
 (define-structure utilities utilities-interface
   (open bitwise error-package
-        loopholes let-opt scheme define-record-types
+        loopholes let-opt scheme
         records record-types
-        threads threads-internal placeholders locks srfi-1)
+        threads threads-internal placeholders locks
+        (subset srfi-1 (fold)))
   (files utilities))
 
 (define-structure let-opt-expanders let-opt-expanders-interface
@@ -17,11 +18,6 @@
   (for-syntax (open scheme let-opt-expanders))
   (files let-opt))
 
-(define-structure defrec-package (export (define-record :syntax))
-  (open records record-types scheme)
-  (for-syntax (open scheme error-package receiving))
-  (files defrec))
-
 (define-structures ((re-level-0 re-level-0-interface)
                     (re-match-internals re-match-internals-interface)
                     (re-internals re-internals-interface)
@@ -30,22 +26,21 @@
                                                        parse-sre parse-sres
                                                        regexp->scheme
                                                        static-regexp? expand-rx)))
-  (open defrec-package
-        weak
+  (open weak
         let-opt
         sort                            ; Posix renderer
-        define-record-types
-        defrec-package
+        (subset define-record-types (define-record-discloser))
         receiving
         utilities
         (subset srfi-1 (fold every fold-right))
+        (subset srfi-13 (string-fold string-index string-fold-right))
         srfi-14
         error-package
         ascii
-        primitives                      ; JMG add-finalizer!
-        define-record-types             ; JMG debugging
-        srfi-13                         ; string-fold
-        posix-regexps
+        (subset primitives (unspecific add-finalizer!))
+        srfi-9
+        (subset posix-regexps (make-regexp regexp-match match-start
+                               match-end regexp-option))
         scheme)
 
   (files re-low re simp re-high
@@ -88,14 +83,14 @@
 (define-structure re-subst re-subst-interface
   (open re-level-0
         re-match-internals
-        posix-regexps
+        (subset posix-regexps (match-start match-end))
         (subset srfi-1 (fold))
         os-strings
-        i/o
+        (subset i/o (write-block))
         let-opt
         receiving
         error-package
-        srfi-13         ; string-copy!
+        (subset srfi-13 (string-copy!))
         scheme)
   (files re-subst))
 
