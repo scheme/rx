@@ -120,4 +120,4 @@
 	  (if (not (cre:regexp/nm cre))
 	      (set-cre:regexp/nm cre (make-regexp re-str
 						  (regexp-option extended))))
-	  (regexp-match (cre:regexp/nm cre) str start #f #f #f)))))
+	  (regexp-match (cre:regexp/nm cre) str start #f #t #t)))))
