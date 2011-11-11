@@ -273,7 +273,7 @@
 	    (if (re-choice? elt)
 
 		;; Flatten nested choices.
-		(let ((sub-elts (re-seq:elts elt)))
+		(let ((sub-elts (re-choice:elts elt)))
 		  (receive (tail-pre-dsm cset bos? eos? bol? eol? tail)
 		      (recur (append sub-elts elts)
 			     prev-cset
