@@ -382,8 +382,8 @@
 	  (if (< i 0)
 	      (if cs? cset (re-char-set:cset (uncase-char-set cset))) ; Case fold if necessary.
 	      (lp (- i 2)
-		  (ucs-range->char-set! (char->ascii (string-ref specs (- i 1)))
-					(+ 1 (char->ascii (string-ref specs i)))
+		  (ucs-range->char-set! (char->scalar-value (string-ref specs (- i 1)))
+					(+ 1 (char->scalar-value (string-ref specs i)))
 					#f cset)))))))
 
 ;;; (regexp->scheme re r)
@@ -697,20 +697,20 @@
 (define (char-set->in-pair cset)
   (let ((add-range (lambda (from to loose ranges)
 		     (if from (case (- to from)
-				((0) (values (cons (ascii->char from) loose)
+				((0) (values (cons (scalar-value->char from) loose)
 					     ranges))
-				((1) (values `(,(ascii->char from)
-					       ,(ascii->char to)
+				((1) (values `(,(scalar-value->char from)
+					       ,(scalar-value->char to)
 					       . ,loose)
 					     ranges))
-				((2) (values `(,(ascii->char from)
-					       ,(ascii->char (+ from 1))
-					       ,(ascii->char to)
+				((2) (values `(,(scalar-value->char from)
+					       ,(scalar-value->char (+ from 1))
+					       ,(scalar-value->char to)
 					       . ,loose)
 					     ranges))
 				(else (values loose
-					      `((,(ascii->char from) .
-						 ,(ascii->char to))
+					      `((,(scalar-value->char from) .
+						 ,(scalar-value->char to))
 						. ,ranges))))
 			 (values loose ranges)))))
 
@@ -719,7 +719,7 @@
 	  (add-range from to loose ranges)
 
 	  (let ((i-1 (- i 1)))
-	    (if (char-set-contains? cset (ascii->char i))
+	    (if (char-set-contains? cset (scalar-value->char i))
 		(if from
 		    (lp i-1 i to loose ranges)	; Continue the run.
 		    (lp i-1 i i  loose ranges))	; Start a new run.

@@ -145,9 +145,9 @@
 
 			      ;; Range
 			      (let* ((i-tochar (+ i1 1))
-				     (to (char->ascii (string-ref s i-tochar))))
-				(do ((j (char->ascii c) (+ j 1))
-				     (cset cset (char-set-adjoin! cset (ascii->char j))))
+				     (to (char->scalar-value (string-ref s i-tochar))))
+				(do ((j (char->scalar-value c) (+ j 1))
+				     (cset cset (char-set-adjoin! cset (scalar-value->char j))))
 				    ((> j to) (lp (+ i-tochar 1) cset))))
 
 			      ;; Just a letter

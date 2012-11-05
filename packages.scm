@@ -36,7 +36,7 @@
         (subset srfi-13 (string-fold string-index string-fold-right))
         srfi-14
         error-package
-        ascii
+        (subset unicode (scalar-value->char char->scalar-value))
         (subset primitives (unspecific add-finalizer!))
         srfi-9
         (subset posix-regexps (make-regexp regexp-match match-start
@@ -62,7 +62,7 @@
         (subset srfi-1 (fold))
         srfi-14
         error-package
-        ascii
+        (subset unicode (scalar-value->char char->scalar-value))
         scheme)
   (files rx-lib))
 

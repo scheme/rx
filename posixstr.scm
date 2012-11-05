@@ -363,7 +363,7 @@
 ;;; quadruple.
 ;;;
 
-(define *nul* (ascii->char 0))
+(define *nul* (scalar-value->char 0))
 
 (define (translate-char-set cset)
   (if (char-set-full? cset)
@@ -494,8 +494,8 @@
 			  (and (not (char=? r2-start #\^))
 
 			       ;; Other ranges are ordered by start char.
-			       (< (char->ascii r1-start)
-				  (char->ascii r2-start))))))))))
+			       (< (char->scalar-value r1-start)
+				  (char->scalar-value r2-start))))))))))
 
 ;;; Order loose chars:
 ;;;   ]   is first,
@@ -526,35 +526,35 @@
 					  (and (not (char=? c1 #\^))
 
 					       ;; other chars by ASCII.
-					       (<= (char->ascii c1)
-						   (char->ascii c2)))))))))))))
+					       (<= (char->scalar-value c1)
+						   (char->scalar-value c2)))))))))))))
 
 ;;; Returns (1) a list of 0-3 loose chars, (2) a list of 0 or 1 ranges.
 
 (define (shrink-range-start r)
-  (let ((start (char->ascii (car r)))
-	(end   (char->ascii (cdr r))))
+  (let ((start (char->scalar-value (car r)))
+	(end   (char->scalar-value (cdr r))))
     (shrink-range-finish-up start (+ start 1) end)))
 
 (define (shrink-range-end r)
-  (let ((start (char->ascii (car r)))
-	(end   (char->ascii (cdr r))))
+  (let ((start (char->scalar-value (car r)))
+	(end   (char->scalar-value (cdr r))))
     (shrink-range-finish-up end start (- end 1))))
 
 (define (shrink-range-finish-up c start end)
   (cond
-   ((> start end) (values (list (ascii->char c)) '())) ; Empty range
+   ((> start end) (values (list (scalar-value->char c)) '())) ; Empty range
 
    ((= start end)			; Collapse singleton range.
-    (values (list (ascii->char c) (ascii->char start))
+    (values (list (scalar-value->char c) (scalar-value->char start))
 	    '()))
 
    ((= (+ start 1) end)			; Collapse doubleton range.
-    (values (list (ascii->char c) (ascii->char start) (ascii->char end))
+    (values (list (scalar-value->char c) (scalar-value->char start) (scalar-value->char end))
 	    '()))
 
-   (else (values (list (ascii->char c))
-		 (list (cons (ascii->char start) (ascii->char end)))))))
+   (else (values (list (scalar-value->char c))
+		 (list (cons (scalar-value->char start) (scalar-value->char end)))))))
 
 
 ;;; We assume the bracket-spec is not a singleton, not empty, and not complete.
