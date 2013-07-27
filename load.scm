@@ -9,4 +9,4 @@
       "packages.scm")
 
 (user)
-(open 're-exports 'sre-syntax-tools)
+(open 're-exports 'sre-syntax-tools 'rx-tests)
