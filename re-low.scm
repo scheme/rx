@@ -84,7 +84,7 @@
 	      (set-cre:regexp cre (make-regexp re-str
 					       (regexp-option extended)
 					       (regexp-option submatches))))
-	  (let ((ret (regexp-match (cre:regexp cre) str start #t #f #f)))
+	  (let ((ret (regexp-match (cre:regexp cre) str start #t #t #t)))
 	    (if (not ret)
 		#f
 		(make-regexp-match str

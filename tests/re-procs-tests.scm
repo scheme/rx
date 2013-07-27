@@ -6,6 +6,12 @@
   (check (regexp-search? (rx "foo") "foo") => #t)
   (check (regexp-search? (rx "bar") "foobar" 3) => #t)
   (check (regexp-search? (rx "bar") "foobar" 4) => #f)
+  (check (regexp-search? (rx (: (* numeric))) "123")  => #t)
+  (check (regexp-search? (rx (: bos (* numeric))) "123")  => #t)
+  (check (regexp-search? (rx (: (* numeric) eos)) "123")  => #t)
+  (check (and (regexp-search (rx (: (* numeric))) "123") #t)  => #t)
+  (check (and (regexp-search (rx (: bos (* numeric))) "123") #t)  => #t)
+  (check (and (regexp-search (rx (: (* numeric) eos)) "123") #t)  => #t)
 
   (let ((foobarbaz (rx (: (submatch "foo")
                           (submatch "bar")
